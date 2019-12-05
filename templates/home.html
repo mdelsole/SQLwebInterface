@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="jumbotron text-center">
+    <h1>SQL GUI</h1>
+    <p class="lead">flowers2019.db</p>
+
+  </div>
+  <div>
+    <table class="table">
+    <thead>
+        <tr>
+            <th>GENUS</th>
+            <th>SPECIES</th>
+            <th>COMNAME</th>
+        <tr>
+    </thead>
+    <tbody>
+        {% for item in flowers %}
+        <tr>
+            <td>{{item.GENUS}}</td>
+            <td>{{item.SPECIES}}</td>
+            <td>{{item.COMNAME}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  </div>
+{% endblock %}
