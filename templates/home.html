@@ -13,14 +13,23 @@
             <th>GENUS</th>
             <th>SPECIES</th>
             <th>COMNAME</th>
+            <th>Options</th>
         <tr>
     </thead>
     <tbody>
         {% for item in flowers %}
         <tr>
-            <td>{{item.GENUS}}</td>
-            <td>{{item.SPECIES}}</td>
-            <td>{{item.COMNAME}}</td>
+            <td>{{item[0]}}</td>
+            <td>{{item[1]}}</td>
+            <td>{{item[2]}}</td>
+            <td>
+              <input type="submit" class="btn btn-primary" value="Update">
+            </td>
+            <td>
+              <a href = "{{ url_for('delete', genus=item[0], species=item[1], comname=item[2]) }}">
+                <input type="submit" class="btn btn-danger" value="Delete">
+              </a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

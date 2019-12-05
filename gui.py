@@ -1,29 +1,29 @@
-from flask import Flask, render_template, g
-import sqlite3
-
+from flask import Flask, render_template, request
+from sql_queries import *
 
 app = Flask(__name__)
-DATABASE = '/Users/Michael/Documents/Python Projects/Database/flowers2019.db'
-
-
-def connect_db():
-    return sqlite3.connect(DATABASE)
-
 
 # Main page
 
 
 @app.route('/')
 def index():
-    g.db = connect_db()
-    # Execute a SQL command
-    cursor = g.db.execute('SELECT * FROM FLOWERS')
-    # Put the data into a dictionary
-    flowers = [dict(GENUS=row[0], SPECIES=row[1], COMNAME=row[2]) for row in cursor.fetchall()]
-    g.db.close()
-    # Pass the dictionary into the html to be displayed in a table
-    return render_template('home.html', flowers=flowers)
+    results = sql_query('SELECT * FROM FLOWERS')
+    return render_template('home.html', flowers=results)
 
+# Router for delete
+
+
+@app.route('/delete', methods=['POST', 'GET'])
+def delete():
+    if request.method == 'GET':
+        genus = request.args.get('genus')
+        species = request.args.get('species')
+        comname = request.args.get('comname')
+        sql_delete('DELETE FROM FLOWERS '
+                   'WHERE GENUS = ? AND SPECIES = ? AND COMNAME = ?', (genus, species, comname))
+    results = sql_query('SELECT * FROM FLOWERS')
+    return render_template('home.html', flowers=results)
 
 # Run the app
 
