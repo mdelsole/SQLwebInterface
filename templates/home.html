@@ -10,6 +10,7 @@
     <table class="table table-hover">
     <thead>
         <tr>
+            <th>IMAGE</th>
             <th>GENUS</th>
             <th>SPECIES</th>
             <th>COMNAME</th>
@@ -19,6 +20,9 @@
     <tbody>
         {% for item in flowers %}
         <tr>
+            <td>
+                <img src={{images[flowers.index(item)] | replace('[\'', '') | replace('\']', '') | replace('\\ufeff', '')}} width=80 height=80>
+            </td>
             <td>{{item[0]}}</td>
             <td>{{item[1]}}</td>
             <td>{{item[2]}}</td>
