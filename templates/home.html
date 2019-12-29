@@ -6,37 +6,131 @@
     <p class="lead">flowers2019.db</p>
 
   </div>
-  <div class="container">
-    <table class="table table-hover">
-    <thead>
-        <tr>
-            <th>IMAGE</th>
-            <th>GENUS</th>
-            <th>SPECIES</th>
-            <th>COMNAME</th>
-            <th>Options</th>
-        <tr>
-    </thead>
-    <tbody>
-        {% for item in flowers %}
-        <tr>
-            <td>
-                <img src={{images[flowers.index(item)] | replace('[\'', '') | replace('\']', '') | replace('\\ufeff', '')}} width=80 height=80>
-            </td>
-            <td>{{item[0]}}</td>
-            <td>{{item[1]}}</td>
-            <td>{{item[2]}}</td>
-            <td>
-              <input type="submit" class="btn btn-primary" value="Update">
-            </td>
-            <td>
-              <a href = "{{ url_for('delete', genus=item[0], species=item[1], comname=item[2]) }}">
-                <input type="submit" class="btn btn-danger" value="Delete">
-              </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-  </table>
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+        <div class="col-sm-6 col-2 h-100 d-flex">
+            <h3 class="d-none d-sm-block">Flowers Database
+                <a href = "{{ url_for('pre_insert')}}">
+                    <input type="submit" class="btn btn-success pull-right" value="Insert">
+                </a>
+            </h3>
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>IMAGE</th>
+                    <th>GENUS</th>
+                    <th>SPECIES</th>
+                    <th>COMNAME</th>
+                    <th>Options</th>
+                <tr>
+            </thead>
+            <tbody>
+                {% for item in flowers %}
+                <tr>
+                    <td>
+                        <img src={{images[flowers.index(item)] | replace('[\'', '') | replace('\']', '') | replace('\\ufeff', '')}} width=80 height=80>
+                    </td>
+                    <td>
+                        <a href = "{{ url_for('select', comname=item[2]) }}">
+                            {{item[0]}}
+                        </a>
+                    </td>
+                    <td>{{item[1]}}</td>
+                    <td>{{item[2]}}</td>
+                    <td>
+                      <a href = "{{ url_for('pre_update', genus=item[0], species=item[1], comname=item[2], theIndex=flowers.index(item))}}">
+                        <input type="submit" class="btn btn-primary" value="Update">
+                      </a>
+                    </td>
+                    <td>
+                      <a href = "{{ url_for('delete', genus=item[0], species=item[1], comname=item[2], theIndex=flowers.index(item))}}">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                      </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="col-sm-6 invisible col-2"><!--hidden spacer--></div>
+        {% if theResults %}
+            <div class="col-sm-6 col-2 h-100 d-flex">
+                <h3 class="d-none d-sm-block">10 Most Recent Sightings</h3>
+                <table class="table table-hover">
+
+                <thead>
+                <tr>
+                    <th>PERSON</th>
+                    <th>LOCATION</th>
+                    <th>SIGHTED</th>
+                <tr>
+                </thead>
+                <tbody>
+                    {% for item in theResults %}
+                    <tr>
+                        <td>{{item[1]}}</td>
+                        <td>{{item[2]}}</td>
+                        <td>{{item[3]}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+              </table>
+            </div>
+        {% elif shouldShowUpdate %}
+        <div class="col-sm-6 col-2 h-100 d-flex">
+            <h3 class="d-none d-sm-block">Update element</h3>
+            <form action="{{ url_for('update', oldGenus=theGenus, oldSpecies=theSpecies, oldComname=theComname, theIndex=theIndex)}}" method="post">
+              <div class="form-group">
+                <label for="imageLink">Image Link</label>
+                <input type="text" name="i" class="form-control" id="imageLink" value={{images[theIndex] | replace('[\'', '') | replace('\']', '') | replace('\\ufeff', '')}}>
+              </div>
+              <div class="form-group">
+                <label for="genusUp">GENUS</label>
+                <input type="text" name="g" class="form-control" id="genusUp" value={{theGenus}}>
+              </div>
+              <div class="form-group">
+                <label for="speciesUp">SPECIES</label>
+                <input type="text" name="s" class="form-control" id="speciesUp" value={{theSpecies}}>
+              </div>
+              <div class="form-group">
+                <label for="comnameUp">COMNAME</label>
+                <input type="text" name="c" class="form-control" id="comnameUp" value={{theComname}}>
+              </div>
+            <input type="submit" class="btn btn-success" value="Confirm update">
+            </form>
+        </div>
+        {% elif shouldShowInsert %}
+        <div class="col-sm-6 col-2 h-100 d-flex">
+            <h3 class="d-none d-sm-block">Insert Sighting</h3>
+            <form action="{{ url_for('insert')}}" method="post">
+              <div class="form-group">
+                <label for="imageLink2">NAME</label>
+                <input type="text" name="n" class="form-control" id="imageLink2">
+              </div>
+              <div class="form-group">
+                <label for="genusUp2">PERSON</label>
+                <input type="text" name="p" class="form-control" id="genusUp2">
+              </div>
+              <div class="form-group">
+                <label for="speciesUp2">LOCATION</label>
+                <input type="text" name="l" class="form-control" id="speciesUp2">
+              </div>
+              <div class="form-group">
+                <label for="comnameUp2">SIGHTED</label>
+                <input type="text" name="s" class="form-control" id="comnameUp2">
+              </div>
+            <input type="submit" class="btn btn-success" value="Confirm update">
+            </form>
+        </div>
+        {% elif insertSuccessful %}
+        <div class="col-sm-6 col-2 h-100 d-flex">
+            <h3 class="d-none d-sm-block">Insert Successful!</h3>
+        </div>
+        {% else %}
+        <div class="col-sm-6 col-2 h-100 d-flex">
+            <h3 class="d-none d-sm-block">Pick an option</h3>
+        </div>
+        {% endif %}
+    </div>
   </div>
 {% endblock %}
